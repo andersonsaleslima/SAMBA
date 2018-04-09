@@ -1,0 +1,14 @@
+# Instalação File Server como membro de AD 
+https://www.youtube.com/watch?v=SRbPz-KVhbw
+https://www.vivaolinux.com.br/artigo/Servidor-de-arquivos-integrado-com-Active-Directory-(AD)-e-quota-de-usuario-grupo
+https://wiki.samba.org/index.php/Setting_up_Samba_as_a_Domain_Member
+
+# Samba como controlador de Dominio:
+https://wiki.samba.org/index.php/Setting_up_Samba_as_an_Active_Directory_Domain_Controller
+https://www.linuxnaweb.com/controlador-de-dominio-samba-4-no-centos-7/
+
+# Visão Geral SMB
+https://www.ibm.com/developerworks/linux/library/l-lpic3-310-1/index.html
+
+# Winbind
+https://www.ibm.com/developerworks/br/library/l-lpic3-313-3/index.html

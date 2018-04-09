@@ -1,0 +1,166 @@
+Cenário
+=========================================================
+
+1- AD
+
+	Hostname: dc-01.ifpb.edu.br
+	IP: 10.10.10.1
+
+
+2- File-Server Samba: 
+
+	Hostname: file-server.ifpb.edu.br
+	IP: 10.10.10.2
+
+3- Cliente Windows 10: 
+
+	Hostname: cliente01.ifpb.edu.br
+	IP: 10.10.10.13
+
+
+CentOS 7 - Instalação SAMBA integrado ao AD
+==========================================================
+
+1- 
+
+	nano /etc/hostname
+
+		file-server	
+
+
+2- 
+
+	nano /etc/resolv.conf
+
+		domain 		ifpb.edu.br
+		search		ifpb.edu.br
+		nameserer 	10.10.10.1
+
+3- 
+
+	yum update -y
+
+4-
+
+	yum install samba-* -y
+
+5- 
+
+	mv /etc/samba/smb.conf /etc/samba/smb.original
+
+6- 
+
+	nano etc/samba/smb.conf
+
+		[global]
+        workgroup = IFPB
+        realm = ifpb.edu.br
+        security = ads
+        idmap uid = 100000 - 200000
+        idmap gid = 100000 - 200000
+        template homedir = /home/%U
+        template shell = /bin/bash
+        winbind separator = +
+        winbind use default domain = yes
+        winbind offline logon = false
+        winbind offline logon = false
+        winbind enum users = yes
+        winbind enum groups = yes
+
+        [userdata]
+		path = /user-data
+		browseable = yes
+		writeable = yes
+		valid users = @teste + teste3
+
+OBS.: o "@" server para indcar um grupo.
+
+7-
+
+	mkdir /user-data
+
+8- 
+	
+	chcon -t samba_share_t /user-data
+
+9-
+
+	chkconfig smb on
+	chkconfig nmb on
+	chkconfig winbind on
+
+10- 
+
+	firewall-cmd --permanent --add-por=139/tcp
+	firewall-cmd --permanent --add-port=445/tcp
+	firewall-cmd --reload
+
+11- 
+
+	nano /etc/krb5.conf
+
+		# Configuration snippets may be placed in this directory as well
+		includedir /etc/krb5.conf.d/
+
+		[logging]
+ 		default = FILE:/var/log/krb5libs.log
+ 		kdc = FILE:/var/log/krb5kdc.log
+ 		admin_server = FILE:/var/log/kadmind.log
+
+		[libdefaults]
+ 		dns_lookup_realm = false
+ 		dns_lookup_kdc = false
+ 		ticket_lifetime = 24h
+ 		renew_lifetime = 7d
+ 		forwardable = true
+ 		rdns = false
+ 		default_realm = dc-01.ifpb.edu.br
+		# default_ccache_name =  KEYRING:persistent:%{uid}
+
+
+		[realms]
+ 		IFPB.EDU.BR = {
+  		kdc = dc-01.ifpb.edu.br
+  		admin_server = dc-01.ifpb.edu.br
+ 		}
+
+		[domain_realm]
+ 		.ifpb.edu.br = ifpb.edu.br
+ 		ifpb.edu.br = ifpb.edu.br
+
+12- 
+
+	systemctl restart smb
+
+12- 
+
+	net join ads -U Administrador -S dc-01.ifpb.edu.br
+
+13- 
+
+	nano /etc/nsswitch.conf
+
+		passwd:	files 	winbind
+		shadow: files 	winbind
+		group:	files 	winbind
+
+13- 
+
+	systemctl restart winbind 
+
+14- 
+
+	wbinfo -u
+	wbinfo -g
+
+15-
+
+	getent passwd
+	getent group
+
+16- 
+	
+	chown root:100000 /user-data
+	chmod g+rwx /user-data
+
+17- 
