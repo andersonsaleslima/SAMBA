@@ -12,3 +12,6 @@ https://www.ibm.com/developerworks/linux/library/l-lpic3-310-1/index.html
 
 # Winbind
 https://www.ibm.com/developerworks/br/library/l-lpic3-313-3/index.html
+
+# Clente Desktop Linux no Ubuntu
+https://www.vivaolinux.com.br/artigo/Ingressar-desktop-GNU-Linux-no-dominio-Active-Directory-do-Windows-Server-2008
